@@ -9,10 +9,19 @@ from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 
 from requests_html import HTMLSession
-from celery import shared_task
+from celery.decorators import task
+import logging
 
 
 BASE_URL = 'https://www.wattpad.com'
+
+FORMAT = '%(asctime)-15s: %(user)-8s %(message)s'
+logging.basicConfig(level=logging.INFO, format=FORMAT)
+
+logger = logging.getLogger(__name__)
+d = {
+     'user': os.getenv('USERNAME')
+     }
 
 
 def crawl_all_chaps(link):
@@ -36,6 +45,7 @@ def crawl_chap(link):
 
     title = r.html.xpath('//h2/text()')[0].strip()
     page = 1
+    logger.info('Crawling chap %s', title, extra=d)
 
     while True:
         r = session.get(link + '/page/{}'.format(page))
@@ -47,10 +57,13 @@ def crawl_chap(link):
             break
 
     content = '<br>'.join(paragraphs)
+    logger.info('Crawled chap %s successfully', title.strip(), extra=d)
     return title, content
 
 
 def generate_html_file(links, name):
+    logger.info('Generating HTML file', extra=d)
+
     content_chaps = []
     html_tpl = """<h2 style="text-align:center;">
                       {}
@@ -78,11 +91,13 @@ def generate_mobi_file(name, author, output_profile):
         '--output-profile {profile} --level1-toc //h:h2 '
         '--authors "{author}" --title "{name}"'
     )
+    logger.info('Generating MOBI file', extra=d)
     cmd = cmd_tpl.format(name=name, profile=output_profile,
                          author=author)
 
     subprocess.Popen(shlex.split(cmd))
     time.sleep(10)
+    logger.info('Generated MOBI file successfully', extra=d)
 
 
 def remove_html_file(name):
@@ -97,6 +112,8 @@ def send_email(name, email):
     from_ = os.getenv('GMAIL_USERNAME')
     to = email
     subject = name + '.mobi'
+
+    logger.info('Sending email to %s', to, extra=d)
 
     server = smtplib.SMTP('smtp.gmail.com:587')
     server.starttls()
@@ -121,9 +138,10 @@ def send_email(name, email):
     server.sendmail(from_, to, text)
     server.quit()
     attachment.close()
+    logger.info('Sent email successfully', extra=d)
 
 
-@shared_task
+@task(name="generate_ebook")
 def make_story(url, profile, email):
     name, author, links = crawl_all_chaps(url)
     name = name.replace('/', '-')
@@ -132,4 +150,3 @@ def make_story(url, profile, email):
     generate_mobi_file(name, author, profile)
     remove_html_file(name)
     send_email(name, email)
-    return True

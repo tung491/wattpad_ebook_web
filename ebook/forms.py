@@ -18,3 +18,9 @@ class CreateStoryForm(forms.Form):
     )
     profile = forms.ChoiceField(widget=forms.Select,
                                 choices=profile_choices)
+
+    def make_story(self):
+        url = self.cleaned_data['url']
+        email = self.cleaned_data['email']
+        profile = self.cleaned_data['profile']
+        make_story(url, profile, email)

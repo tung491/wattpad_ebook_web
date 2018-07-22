@@ -17,11 +17,11 @@ class ThanksView(TemplateView):
 
 
 def get_args(request):
-        form = CreateStoryForm(request.POST)
-        if form.is_valid():
-            url = form.cleaned_data['url']
-            email = form.cleaned_data['email']
-            profile = form.cleaned_data['profile']
-            rs = make_story.delay(url, email, profile)
-            rs.get(f)
+    form = CreateStoryForm(request.POST)
+    if form.is_valid():
+        url = form.cleaned_data['url']
+        email = form.cleaned_data['email']
+        profile = form.cleaned_data['profile']
+        rs = make_story.delay(url, email, profile)
+        rs.get(f)
     return HttpResponseRedirect('/thanks/')
