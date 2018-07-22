@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block body %}
+	<section class="hero is-large">
+		<div class="hero-body">
+			<div class="container has-text-centered">
+				<h1 class="title">Wattpad Ebook</h1>
+				<h2 class="subtitle">Generate ebook from Wattpad</h2>
+				<form method="post">
+					{% csrf_token %}
+					<div class="column is-three-fifths is-offset-one-fifth">
+						<p><label for="id_url"></label>
+							<input type="url" name="url" value="" required id="id_url" class="input is-info"
+							       placeholder="Wattpad link you want generate"/>
+						</p>
+					</div>
+					<div class="column is-three-fifths is-offset-one-fifth">
+						<p><label for="id_email"></label>
+							<input type="email" name="email" required id="id_email" class="input is-primary"
+							       placeholder="Your Kindle Email"/>
+						</p>
+					</div>
+
+					<div class="select is-info">
+						<select name="profile" id="id_profile">
+							<option>Select Kindle profile</option>
+							<option value="kindle">Kindle 201..</option>
+
+							<option value="kindle_dx">Kindle DX</option>
+
+							<option value="kindle_fire">Kindle Fire</option>
+
+							<option value="kindle_oasis">Kindle Oasis 1,2</option>
+
+							<option value="kindle_pw">Kindle Paperwhite 1,2</option>
+
+							<option value="kindle_pw3">Kindle Paperwhite 3</option>
+
+							<option value="kindle_voyage">Kindle Voyage</option>
+						</select>
+					</div>
+					<div class="column is-2-desktop is-offset-5-desktop has-text-centered">
+						<button class="button is-primary is-medium" type="submit">
+							<span class="icon is-left"><i class="fas fa-search"></i></span> <span>Generate</span>
+						</button>
+					</div>
+					</form>
+			</div>
+		</div>
+	</section>
+{% endblock %}
