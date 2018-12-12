@@ -24,7 +24,7 @@ SECRET_KEY = '&8r)@bucwpa)z3#w6-j0_+gph%4yefwlr&ifm!)c#58lda_3#x'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['www.wattpadebook.xyz', 'wattpadebook.xyz', 'localhost']
 
 # Application definition
 
@@ -36,6 +36,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'captcha',
+    'widget_tweaks',
+    'djcelery_email',
 ]
 
 MIDDLEWARE = [
@@ -102,7 +105,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Ho_Chi_Minh'
 
 USE_I18N = True
 
@@ -114,13 +117,29 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATIC_ROOT = os.path.join(BASE_DIR, '/static/')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 
 # CELERY STUFF
 BROKER_URL = 'django://localhost:5672'
-CELERY_RESULT_BACKEND = 'redis://localhost:5672'
+CELERY_RESULT_BACKEND = 'redis://localhost:6200'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'Africa/Nairobi'
+CELERY_TIMEZONE = 'Asia/Ho_Chi_Minh'
+
+# CAPTCHA
+
+RECAPTCHA_PUBLIC_KEY = '6LeRh38UAAAAAPWMkwJeFdALduXNA9v4Rm8WgsOQ'
+RECAPTCHA_PRIVATE_KEY = '6LeRh38UAAAAAK6qZ3ER14GcKStICd6NQbWsB0Ev'
+NOCAPTCHA = True
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'dosontung987@gmail.com'
+EMAIL_HOST_PASSWORD = 'Tung040901'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'

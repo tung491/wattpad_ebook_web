@@ -1,50 +1,67 @@
 {% extends "base.html" %}
+{% load widget_tweaks %}
 {% block body %}
-	<section class="hero is-large">
-		<div class="hero-body">
-			<div class="container has-text-centered">
-				<h1 class="title">Wattpad Ebook</h1>
-				<h2 class="subtitle">Generate ebook from Wattpad</h2>
-				<form method="post">
-					{% csrf_token %}
-					<div class="column is-three-fifths is-offset-one-fifth">
-						<p><label for="id_url"></label>
-							<input type="url" name="url" value="" required id="id_url" class="input is-info"
-							       placeholder="Wattpad link you want generate"/>
-						</p>
-					</div>
-					<div class="column is-three-fifths is-offset-one-fifth">
-						<p><label for="id_email"></label>
-							<input type="email" name="email" required id="id_email" class="input is-primary"
-							       placeholder="Your Kindle Email"/>
-						</p>
-					</div>
+    <section class="hero is-large">
+        <div class="body">
+            <div class="container has-text-centered">
+                <p>Để nhận được ebook, bạn có 2 lựa chọn:</p><br>
+            </div>
+            <div class="column is-5 is-offset-4">
+                <ol>
+                    <li>Nhập email của bạn để chúng tôi gửi file ebook cho bạn</li>
 
-					<div class="select is-info">
-						<select name="profile" id="id_profile">
-							<option>Select Kindle profile</option>
-							<option value="kindle">Kindle 201..</option>
+                    <li>Nhập email của Kindle để chúng tôi gửi thẳng ebook đến Kindle của bạn</li>
+                </ol>
+            </div>
+            <div class="container has-text-centered">
+                <div class="column is-7 is-offset-3">
+                    <p><strong>Lưu ý</strong>: Khi chọn lựa chọn 2, bạn vui lòng click vào <a
+                            href="https://www.amazon.com/hz/mycd/myx#/home/settings/" target="_blank"
+                            rel="noopener">đây</a>, chọn
+                        <strong>Personal Document Settings</strong>, thêm địa chỉ email dosontung987@gmail.com vào
+                        <strong>Approved Personal Document E-mail List</strong></p>
+                </div>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="column is-three-fifths is-offset-one-fifth">
+                        <p><label for="id_url"></label>
+                            <input type="url" name="url" value="" required id="id_url" class="input is-info"
+                                   placeholder="Link Wattpad bạn muốn tạo ebook"/>
+                        </p>
+                    </div>
+                    <div class="column is-three-fifths is-offset-one-fifth">
+                        <p><label for="id_email"></label>
 
-							<option value="kindle_dx">Kindle DX</option>
+                            <input type="email" name="email" required id="id_email" class="input is-primary"
+                                   placeholder="Địa chỉ email"/>
+                        </p>
+                    </div>
+                    <div class="column is-three-fifths is-offset-one-fifth">
+                        <div class="select is-info">
+                            <select name="profile" id="id_profile" required>
+                                <option>Chọn Kindle profile</option>
+                                <option value="kindle">Kindle 201..</option>
+                                <option value="kindle_dx">Kindle DX</option>
+                                <option value="kindle_fire">Kindle Fire</option>
+                                <option value="kindle_oasis">Kindle Oasis 1,2</option>
+                                <option value="kindle_pw">Kindle Paperwhite 1,2</option>
+                                <option value="kindle_pw3">Kindle Paperwhite 3, 4</option>
+                                <option value="kindle_voyage">Kindle Voyage</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        {% render_field form.captcha %}
+                    </div>
 
-							<option value="kindle_fire">Kindle Fire</option>
-
-							<option value="kindle_oasis">Kindle Oasis 1,2</option>
-
-							<option value="kindle_pw">Kindle Paperwhite 1,2</option>
-
-							<option value="kindle_pw3">Kindle Paperwhite 3</option>
-
-							<option value="kindle_voyage">Kindle Voyage</option>
-						</select>
-					</div>
-					<div class="column is-2-desktop is-offset-5-desktop has-text-centered">
-						<button class="button is-primary is-medium" type="submit">
-							<span class="icon is-left"><i class="fas fa-search"></i></span> <span>Generate</span>
-						</button>
-					</div>
-					</form>
-			</div>
-		</div>
-	</section>
+                    <div class="column is-2-desktop is-offset-5-desktop ">
+                        <button class="button is-link is-medium" type="submit">
+                            <span class="icon is-left"><i class="fas fa-search"></i></span>
+                            <span>Generate</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
 {% endblock %}

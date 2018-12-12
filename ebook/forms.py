@@ -1,3 +1,4 @@
+from captcha.fields import ReCaptchaField
 from django import forms
 
 from .tasks import make_story
@@ -6,6 +7,7 @@ from .tasks import make_story
 class CreateStoryForm(forms.Form):
     url = forms.URLField()
     email = forms.EmailField()
+    captcha = ReCaptchaField()
 
     profile_choices = (
         ('kindle', 'Kindle 201..'),
@@ -19,8 +21,12 @@ class CreateStoryForm(forms.Form):
     profile = forms.ChoiceField(widget=forms.Select,
                                 choices=profile_choices)
 
-    def make_story(self):
+    def create_story(self, url, profile, email):
         url = self.cleaned_data['url']
         email = self.cleaned_data['email']
         profile = self.cleaned_data['profile']
-        make_story(url, profile, email)
+        make_story.delay(url, profile, email)
+
+
+class SearchForm(forms.Form):
+    link = forms.URLField()

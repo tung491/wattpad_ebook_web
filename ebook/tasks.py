@@ -1,17 +1,13 @@
+import logging
 import os
 import shlex
-import smtplib
 import subprocess
 import time
 
-from email import encoders
-from email.mime.base import MIMEBase
-from email.mime.multipart import MIMEMultipart
-
-from requests_html import HTMLSession
+import requests
 from celery.decorators import task
-import logging
-
+from django.core.mail import EmailMessage
+from requests_html import HTMLSession
 
 BASE_URL = 'https://www.wattpad.com'
 
@@ -43,7 +39,7 @@ def crawl_chap(link):
     session = HTMLSession()
     r = session.get(link)
 
-    title = r.html.xpath('//h2/text()')[0].strip()
+    title = r.html.xpath('//header/h2/text()')[0].strip()
     page = 1
     logger.info('Crawling chap %s', title, extra=d)
 
@@ -96,57 +92,83 @@ def generate_mobi_file(name, author, output_profile):
                          author=author)
 
     subprocess.Popen(shlex.split(cmd))
-    time.sleep(10)
+    time.sleep(40)
     logger.info('Generated MOBI file successfully', extra=d)
 
 
 def remove_html_file(name):
-    filename = name + '.mobi'
     try:
-        os.remove(filename)
+        os.remove(name + '.html')
+        os.remove(name + '.mobi')
     except FileNotFoundError:
         pass
 
 
 def send_email(name, email):
-    from_ = os.getenv('GMAIL_USERNAME')
+    from_ = 'dosontung987@gmail.com'
     to = email
     subject = name + '.mobi'
 
     logger.info('Sending email to %s', to, extra=d)
 
-    server = smtplib.SMTP('smtp.gmail.com:587')
-    server.starttls()
-    server.login(from_, os.getenv('GMAIL_PASSWORD'))
+    email_subj = EmailMessage('Your ebook which generate in WattpadEbook',
+                              'Thanks for using our service',
+                              from_, [to])
+    email_subj.content_subtype = 'html'
+    email_subj.attach_file(subject)
+    email_subj.send()
 
-    msg = MIMEMultipart()
-
-    msg['From'] = from_
-    msg['To'] = to
-    msg['Subject'] = subject
-
-    filename = subject
-    attachment = open(subject, "rb")
-
-    part = MIMEBase('application', 'octet-stream')
-    part.set_payload(attachment.read())
-    encoders.encode_base64(part)
-    part.add_header('Content-Disposition', "attachment", filename=filename)
-    msg.attach(part)
-
-    text = msg.as_string()
-    server.sendmail(from_, to, text)
-    server.quit()
-    attachment.close()
     logger.info('Sent email successfully', extra=d)
+    time.sleep(0.01)
+
+
+def link_is_vaild(url):
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.75 Safari/537.36'}
+    if url.startswith('https://www.wattpad.com/') and requests.head(url, headers=headers).ok:
+        return True
+    else:
+        return False
+
+
+def link_not_vaild(output_profile, email):
+    content = 'Link not vaild'
+    with open('link_not_vaild.html', 'w') as f:
+        f.write(content)
+    generate_mobi_file('link_not_vaild', 'WattpadEbook', output_profile)
+
+    from_ = 'dosontung987@gmail.com'
+    to = email
+    subject = 'link_not_vaild.mobi'
+
+    logger.info('Sending email to %s', to, extra=d)
+
+    email_subj = EmailMessage('Your link which you type in WattpadEbook isn\'t vaild',
+                              'Please try again',
+                              from_, [to])
+    email_subj.content_subtype = 'html'
+    email_subj.attach_file(subject)
+    email_subj.send()
+
+    logger.info('Sent email successfully', extra=d)
+    try:
+        os.remove('link_not_vaild.html')
+        os.remove('link_not_vaild.mobi')
+    except FileNotFoundError:
+        pass
+
+    time.sleep(0.01)
 
 
 @task(name="generate_ebook")
 def make_story(url, profile, email):
-    name, author, links = crawl_all_chaps(url)
-    name = name.replace('/', '-')
+    if link_is_vaild(url):
+        name, author, links = crawl_all_chaps(url)
+        name = name.replace('/', '-')
 
-    generate_html_file(links, name)
-    generate_mobi_file(name, author, profile)
-    remove_html_file(name)
-    send_email(name, email)
+        generate_html_file(links, name)
+        generate_mobi_file(name, author, profile)
+        send_email(name, email)
+        remove_html_file(name)
+    else:
+        link_not_vaild(profile, email)

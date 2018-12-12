@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Story(models.Model):
-    name = models.CharField(max_length=2000, null=False)
+    name = models.CharField(max_length=200, null=False)
     source = models.URLField(max_length=2000, null=False)
     profile_choices = (
         ('kindle', 'Kindle 201..'),

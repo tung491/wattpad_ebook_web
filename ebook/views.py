@@ -1,27 +1,29 @@
-from django.views.generic.edit import FormView
 from django.views.generic.base import TemplateView
-from django.http import HttpResponseRedirect
+from django.views.generic.edit import FormView
 
 from .forms import CreateStoryForm
-from .tasks import make_story
 
 
 class HomeView(FormView):
     template_name = 'index.html'
     form_class = CreateStoryForm
-    success_url = '/thanks/'
+    success_url = 'thanks/'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+    def form_valid(self, form):
+        url = form.cleaned_data['url']
+        profile = form.cleaned_data['profile']
+        email = form.cleaned_data['email']
+        form.create_story(url, profile, email)
+        return super().form_valid(form)
 
 
 class ThanksView(TemplateView):
     template_name = 'thanks.html'
 
 
-def get_args(request):
-    form = CreateStoryForm(request.POST)
-    if form.is_valid():
-        url = form.cleaned_data['url']
-        email = form.cleaned_data['email']
-        profile = form.cleaned_data['profile']
-        rs = make_story.delay(url, email, profile)
-        rs.get(f)
-    return HttpResponseRedirect('/thanks/')
+class FAQView(TemplateView):
+    template_name = 'faq.html'

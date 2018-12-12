@@ -1,15 +1,82 @@
+{% load static from staticfiles %}
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
+<head>
     <meta charset="utf-8">
-    <title>Watpad Ebook</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+    <title>Wattpad Ebook</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css">
-    <script defer src="https://use.fontawesome.com/releases/v5.1.0/js/all.js"></script>
-  </head>
-  <body>
-    {% block body %}
-    {% endblock %}
-  </body>
+    <link rel="shortcut icon" href="https://ci.phncdn.com/www-static/favicon.ico">
+    <link rel="stylesheet" href="{% static 'bulma.min.css' %}">
+    <meta property="og:title" content>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://wattpadebook.xyz/">
+    <meta name="theme-color" content="#317EFB"/>
+    <meta name="Description" content="Generate ebooks from Wattpad">
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+    <script src="{% static "all.js" %}" defer></script>
+    <style>
+        .g-recaptcha div {
+            display: block;
+            margin-right: auto;
+            margin-left: auto;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="{% url "ebook:home" %}">
+                <h1 class="title is-3">Wattpad Ebook</h1>
+            </a>
+
+            <a role="button" class="navbar-burger" data-target="navMenu" aria-label="menu" aria-expanded="false">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+        <div class="navbar-menu" id="navMenu">
+            <div class="navbar-end">
+                <!-- navbar items -->
+                <a class="navbar-item" href="{% url 'ebook:home' %}">
+                    <span class="icon is-left has-text-primary"><i class="fas fa-home"></i></span> <span>Home</span>
+                </a>
+                <a href="{% url 'ebook:faq' %}" class="navbar-item">
+              <span class="icon has-text-success">
+	              <i class="far fa-question-circle"></i>
+              </span>
+                    <span>FAQ</span>
+                </a>
+                <div class="navbar-item">
+                    <div class="field is-grouped">
+                        <p class="control">
+                            <a href="https://github.com/tung491/wattpad_ebook_web" target="_blank"
+                               class="button is-info" rel="noopener">
+                    <span class="icon has-text-white">
+                      <i class="fab fa-github"></i>
+                    </span>
+                                <span>Github</span>
+                            </a>
+                        </p>
+                        <p class="control">
+                            <a href="https://www.facebook.com/Wattpad-Ebook-2215093265174028" target="_blank"
+                               class="button is-link" rel="noopener">
+                    <span class="icon has-text-white">
+                      <i class="fab fa-facebook"></i>
+                    </span>
+                                <span>Fanpage</span>
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>
+{% block body %}
+{% endblock %}
+</body>
 </html>
