@@ -160,6 +160,7 @@ def link_not_vaild(output_profile, email):
     time.sleep(0.01)
 
 
+
 @task(name="generate_ebook")
 def make_story(url, profile, email):
     if link_is_vaild(url):
