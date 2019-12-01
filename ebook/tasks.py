@@ -24,8 +24,8 @@ def crawl_all_chaps(link):
     session = HTMLSession()
     r = session.get(link)
 
-    name = r.html.xpath('//span/h1/text()')[0].strip().title()
-    author = r.html.xpath('//div[@class="author hidden-lg"]/a[2]/text()')[0]
+    name = r.html.xpath('//div/h1/text()')[0].strip().title()
+    author = r.html.xpath('//strong/a/text()')[0]
 
     urls = r.html.xpath('//ul[@class="table-of-contents"]/li/a/@href')
     links = [BASE_URL + url for url in urls]
@@ -132,10 +132,10 @@ def link_is_vaild(url):
 
 
 def link_not_vaild(output_profile, email):
-    content = 'Link not vaild'
-    with open('link_not_vaild.html', 'w') as f:
+    content = 'Link invaild'
+    with open('link_invaild', 'w') as f:
         f.write(content)
-    generate_mobi_file('link_not_vaild', 'WattpadEbook', output_profile)
+    generate_mobi_file('link_invaild', 'WattpadEbook', output_profile)
 
     from_ = 'dosontung987@gmail.com'
     to = email

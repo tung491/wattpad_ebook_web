@@ -21,12 +21,11 @@ class CreateStoryForm(forms.Form):
     profile = forms.ChoiceField(widget=forms.Select,
                                 choices=profile_choices)
 
-    def create_story(self, url, profile, email):
+    def create_story(self):
         url = self.cleaned_data['url']
         email = self.cleaned_data['email']
         profile = self.cleaned_data['profile']
         make_story.delay(url, profile, email)
 
 
-class SearchForm(forms.Form):
-    link = forms.URLField()
+
