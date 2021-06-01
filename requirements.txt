@@ -55,7 +55,7 @@ soupsieve==1.9.5
 tqdm==4.39.0
 traitlets==4.3.2
 twine==3.1.1
-urllib3==1.24.2
+urllib3==1.26.5
 vine==1.1.4
 w3lib==1.19.0
 wattpad-ebook==1.0.1
