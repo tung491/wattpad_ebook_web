@@ -23,7 +23,7 @@ entrypoints==0.3
 fake-useragent==0.1.10
 idna==2.7
 importlib-metadata==0.23
-ipython==6.4.0
+ipython==7.16.3
 ipython-genutils==0.2.0
 jedi==0.12.1
 keyring==19.2.0
