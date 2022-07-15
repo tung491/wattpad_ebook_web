@@ -15,7 +15,7 @@ decorator==4.3.0
 Django==2.0.12
 django-appconf==1.0.3
 django-celery-email==2.0.2
-django-celery-results==1.0.1
+django-celery-results==2.4.0
 django-recaptcha==1.4.0
 django-widget-tweaks==1.4.2
 docutils==0.15.2
